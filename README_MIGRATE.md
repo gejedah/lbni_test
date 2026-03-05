@@ -20,7 +20,7 @@ Migration steps to finish upgrading to CodeIgniter 4
 
 5) Test endpoints:
    http://localhost:8080/so
-   http://localhost:8080/so/list?tipe=Door%20to%20Door&ada_asuransi=1
+   http://localhost:8080/sales_order/list?tipe=Door%20to%20Door&ada_asuransi=1
 
 6) Migrate other controllers/models/views manually from `application/` to `app/` following CI4 conventions.
 
