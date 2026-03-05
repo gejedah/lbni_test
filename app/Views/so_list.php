@@ -36,7 +36,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 class="h4 mb-0">LBNI Sales Orders</h1>
         <div>
-            <?php $jsonUrl = '/sales_order' . '?' . http_build_query(['search' => $search ?? '', 'tipe' => $tipe ?? 'Door to Door', 'ada_asuransi' => $ada_asuransi ?? 1]); ?>
+            <?php $jsonUrl = '/sales_order' . '?' . http_build_query(['search' => $search ?? '', 'tipe' => $tipe, 'ada_asuransi' => $ada_asuransi]); ?>
             <a href="<?= $jsonUrl ?>" class="btn btn-outline-secondary btn-sm">Export JSON</a>
         </div>
     </div>
@@ -107,8 +107,8 @@
             <?php
             $baseUrl = '/sales_order';
             $searchParam = $search ?? '';
-            $tipeParam = $tipe ?? 'Door to Door';
-            $adaParam = $ada_asuransi ?? 1;
+            $tipeParam = $tipe;
+            $adaParam = $ada_asuransi;
             $current = (int) ($pager['currentPage'] ?? 1);
             $last = (int) ($pager['lastPage'] ?? 1);
             $start = max(1, $current - 2);
