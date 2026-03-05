@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Ensure index.php is the directory index
+    DirectoryIndex index.php
+
+    # If the requested file or directory exists, serve it directly
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Otherwise forward the request to index.php (remove index.php from URL)
+    RewriteRule ^(.*)$ index.php/$1 [L,QSA]
+</IfModule>
