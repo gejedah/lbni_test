@@ -39,8 +39,8 @@ class SoModel extends Model
             'pb.kode as kode_partner_bongkar',
             'pb.nama as partner_bongkar',
             "(CASE WHEN soohj.otorisasi_harga_jual IS NOT NULL THEN soohj.otorisasi_harga_jual ELSE so.harga_jual END) as `harga_jual`",
+            'soohj.tanggal_otorisasi'
         ]);
-        // log_message('debug', 'getSalesOrderBuilder: ' . $builder->getCompiledSelect(false)); // Log the compiled SQL for debugging
 
         $builder->join('pelanggan pelanggan', 'pelanggan.id_pelanggan = so.id_pelanggan', 'left');
         $builder->join('salesman sales', 'sales.id_salesman = so.id_salesman', 'left');
@@ -96,8 +96,8 @@ class SoModel extends Model
             'wb.nama_wilayah as wilayah_bongkar',
             'pb.kode as kode_partner_bongkar',
             'pb.nama as partner_bongkar',
-            'jk.no_reff as jadwal_kapal',
             "(CASE WHEN soohj.otorisasi_harga_jual IS NOT NULL THEN soohj.otorisasi_harga_jual ELSE so.harga_jual END) as `harga_jual`",
+            'soohj.tanggal_otorisasi'
         ]);
         log_message('debug', 'getSalesOrderBuilder: ' . $builder->getCompiledSelect(false)); // Log the compiled SQL for debugging
 
