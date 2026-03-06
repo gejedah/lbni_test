@@ -1,0 +1,68 @@
+-- No. | No. SO | Tipe SO 
+-- | Qty | Tanggal | Jam | Kode Pelanggan | Nama Pelanggan | Kode Salesman | Nama Salesman |
+-- Kategori Kargo | Asuransi | Tagihan Asuransi | Keterangan SO 
+-- | Jadwal Kapal | Kode Kapal
+-- | Tanggal Rencana Berangkat (ETD) | Wilayah Muat | Kode Partner Muat | Partner Muat 
+-- | Wilayah Bongkar | Kode Partner Bongkar | Partner Bongkar | Harga Jual | Tanggal Otorisasi
+
+select
+	so.id_s_o ,
+	so.no_s_o, 
+	so.tipe ,
+	so.qty ,
+	so.tanggal,
+	so.jam ,
+	pelanggan.kode_pelanggan ,
+	pelanggan.nama as nama_pelanggan,
+	sales.kode_salesman ,
+	sales.nama as nama_salesman,
+	kk.nama_kategori_kargo as kategori_kargo ,
+	case 
+		when so.ada_asuransi = 1 then 'YA'
+	end as Asuransi,
+	so.tagihan_asuransi ,
+	so.keterangan as "Keterangan So",
+	jk.no_reff as "Jadwal Kapal",
+		kapal.kode_kapal ,
+		jk.rencana_berangkat_etd as "Tanggal Rencana Berangkat (ETD)",
+	wm.nama_wilayah as "Wilayah Muat",
+	pm.kode as "Kode Partner Muat",
+	pm.nama as "Partner Muat" ,
+	wb.nama_wilayah as "Wilayah Bongkar",
+	pb.kode as "Kode Partner Bongkar",
+	pb.nama as "Partner Bongkar",
+	soohj.otorisasi_harga_jual as "Harga Jual",
+	soohj.tanggal_otorisasi as "Tanggal Otorisasi"
+from
+	s_o so
+left join pelanggan pelanggan
+	on
+	pelanggan.id_pelanggan = so.id_pelanggan
+left join salesman sales
+	on
+	sales.id_salesman = so.id_salesman
+join kategori_kargo kk 
+	on
+	kk.id_kategori_kargo = so.id_kategori_kargo
+join jadwal_kapal jk 
+	on
+	jk.id_jadwal_kapal = so.id_jadwal_kapal
+join kapal as kapal
+on
+	kapal.id_kapal = jk.id_kapal
+left join partner as pm
+	on
+	so.id_partner_muat = pm.id_partner
+left join partner as pb
+	on
+	so.id_partner_bongkar = pb.id_partner
+left join wilayah wm
+	on
+	jk.id_wilayah_muat = wm.id_wilayah
+left join wilayah wb
+	on
+	wb.id_wilayah = jk.id_wilayah_bongkar
+INNER  join s_o_otorisasi_harga_jual soohj 
+	on
+	soohj.id_s_o = so.id_s_o
+;
