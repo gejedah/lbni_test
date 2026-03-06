@@ -115,8 +115,8 @@
             $end = min($last, $current + 2);
             ?>
 
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
+            <nav aria-label="Page navigation" class="d-flex justify-content-center">
+                <ul class="d-flex pagination justify-content-center">
                     <li class="page-item <?= $current <= 1 ? 'disabled' : '' ?>">
                         <?php $qp = http_build_query(['page' => $current - 1, 'search' => $searchParam, 'tipe' => $tipeParam, 'ada_asuransi' => $adaParam]); ?>
                         <a class="page-link" href="<?= $current > 1 ? $baseUrl . '?' . $qp : '#' ?>">&laquo; Prev</a>
