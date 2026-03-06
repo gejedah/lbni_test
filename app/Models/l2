@@ -6,32 +6,39 @@
 -- | Wilayah Bongkar | Kode Partner Bongkar | Partner Bongkar | Harga Jual | Tanggal Otorisasi
 
 select
-	so.id_s_o ,
-	so.no_s_o, 
-	so.tipe ,
-	so.qty ,
-	so.tanggal,
-	so.jam ,
-	pelanggan.kode_pelanggan ,
-	pelanggan.nama as nama_pelanggan,
-	sales.kode_salesman ,
-	sales.nama as nama_salesman,
-	kk.nama_kategori_kargo as kategori_kargo ,
+	ROW_NUMBER() OVER (ORDER BY so.id_s_o  asc ) as 'No',
+	so.no_s_o as 'No SO', 
+	so.tipe as 'Tipe SO',
+	so.qty as 'Qty',
+	so.tanggal as 'Tanggal',
+	so.jam as 'Jam',
+	pelanggan.kode_pelanggan as 'Kode Pelanggan',
+	pelanggan.nama as 'Nama Pelanggan',
+	sales.kode_salesman as 'Kode Salesman',
+	sales.nama as 'Nama Salesman',
+	kk.nama_kategori_kargo as 'kategori kargo' ,
 	case 
 		when so.ada_asuransi = 1 then 'YA'
+		else ''
 	end as Asuransi,
-	so.tagihan_asuransi ,
+	case
+		when so.tagihan_asuransi is not null then so.tagihan_asuransi
+		else ""
+	end as 'Tagihan Asuransi',
 	so.keterangan as "Keterangan So",
-	jk.no_reff as "Jadwal Kapal",
-		kapal.kode_kapal ,
+	CONCAT_WS(' ', kapal.nama_kapal , ' V. ',  jk.no_voyage )    as "Jadwal Kapal",
+		kapal.kode_kapal as 'Kode Kapal',
 		jk.rencana_berangkat_etd as "Tanggal Rencana Berangkat (ETD)",
 	wm.nama_wilayah as "Wilayah Muat",
-	pm.kode as "Kode Partner Muat",
-	pm.nama as "Partner Muat" ,
-	wb.nama_wilayah as "Wilayah Bongkar",
-	pb.kode as "Kode Partner Bongkar",
-	pb.nama as "Partner Bongkar",
-	soohj.otorisasi_harga_jual as "Harga Jual",
+	COALESCE( pm.kode, '')  as "Kode Partner Muat",
+	COALESCE(pm.nama, '') as "Partner Muat" ,
+	COALESCE(wb.nama_wilayah, '') as "Wilayah Bongkar",
+	COALESCE(pb.kode, '') as "Kode Partner Bongkar",
+	COALESCE(pb.nama, '') as "Partner Bongkar",
+	case
+		when soohj.otorisasi_harga_jual is not null then soohj.otorisasi_harga_jual
+		else so.harga_jual
+	end as "Harga Jual",
 	soohj.tanggal_otorisasi as "Tanggal Otorisasi"
 from
 	s_o so
@@ -41,13 +48,13 @@ left join pelanggan pelanggan
 left join salesman sales
 	on
 	sales.id_salesman = so.id_salesman
-join kategori_kargo kk 
+left join kategori_kargo kk 
 	on
 	kk.id_kategori_kargo = so.id_kategori_kargo
-join jadwal_kapal jk 
+left join jadwal_kapal jk 
 	on
 	jk.id_jadwal_kapal = so.id_jadwal_kapal
-join kapal as kapal
+left join kapal as kapal
 on
 	kapal.id_kapal = jk.id_kapal
 left join partner as pm
@@ -62,10 +69,7 @@ left join wilayah wm
 left join wilayah wb
 	on
 	wb.id_wilayah = jk.id_wilayah_bongkar
-INNER join s_o_otorisasi_harga_jual soohj 
+left join s_o_otorisasi_harga_jual soohj 
 	on
 	soohj.id_s_o = so.id_s_o
-where
-	so.tipe = 'Door to Door'
-	and so.ada_asuransi = 1
 ;
