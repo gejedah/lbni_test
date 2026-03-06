@@ -75,8 +75,14 @@
                     <th>Kategori Kargo</th>
                     <th>Asuransi</th>
                     <th>Tagihan Asuransi</th>
-                    <th>Harga Jual</th>
+                    <th>Jadwal Kapal</th>
                     <th>Rencana Berangkat (ETD)</th>
+                    <th>Wilayah Muat</th>
+                    <th>Partner Muat</th>
+                    <th>Wilayah Bongkar</th>
+                    <th>Partner Bongkar</th>
+                    <th>Keterangan</th>
+                    <th>Harga Jual</th>
                     <th style="width:90px">Aksi</th>
                 </tr>
                 </thead>
@@ -94,8 +100,14 @@
                         <td><?= esc($o['kategori_kargo'] ?? '') ?></td>
                         <td><?= esc($o['asuransi'] ?? '') ?></td>
                         <td><?= esc($o['tagihan_asuransi'] ?? '') ?></td>
-                        <td><?= esc($o['harga_jual'] ?? '') ?></td>
+                        <td><?= esc($o['jadwal_kapal'] ?? '') ?> <?= !empty($o['kode_kapal']) ? (' - ' . esc($o['kode_kapal'])) : '' ?></td>
                         <td><?= esc($o['tanggal_rencana_berangkat_etd'] ?? '') ?></td>
+                        <td><?= esc($o['wilayah_muat'] ?? '') ?></td>
+                        <td><?= esc($o['kode_partner_muat'] ?? '') ?><?= !empty($o['partner_muat']) ? (' - ' . esc($o['partner_muat'])) : '' ?></td>
+                        <td><?= esc($o['wilayah_bongkar'] ?? '') ?></td>
+                        <td><?= esc($o['kode_partner_bongkar'] ?? '') ?><?= !empty($o['partner_bongkar']) ? (' - ' . esc($o['partner_bongkar'])) : '' ?></td>
+                        <td><?= esc($o['keterangan_so'] ?? '') ?></td>
+                        <td><?= esc($o['harga_jual'] ?? '') ?></td>
                         <td><a href="/sales_order/view/<?= esc($o['id_s_o'] ?? '') ?>" class="btn btn-sm btn-outline-primary">View</a></td>
                     </tr>
                 <?php endforeach; ?>

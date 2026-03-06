@@ -117,7 +117,27 @@
                             </tr>
                             <tr>
                                 <th>Jadwal Kapal</th>
-                                <td><?= esc($order['jadwal_kapal'] ?? '') ?> - <?= esc($order['kode_kapal'] ?? '') ?></td>
+                                <td><?= esc($order['jadwal_kapal'] ?? '') ?> <?= !empty($order['kode_kapal']) ? ('- ' . esc($order['kode_kapal'])) : '' ?></td>
+                            </tr>
+                            <tr>
+                                <th>Rencana Berangkat (ETD)</th>
+                                <td><?= esc($order['tanggal_rencana_berangkat_etd'] ?? '') ?></td>
+                            </tr>
+                            <tr>
+                                <th>Wilayah Muat</th>
+                                <td><?= esc($order['wilayah_muat'] ?? '') ?></td>
+                            </tr>
+                            <tr>
+                                <th>Partner Muat</th>
+                                <td><?= esc($order['kode_partner_muat'] ?? '') ?><?= !empty($order['partner_muat']) ? (' - ' . esc($order['partner_muat'])) : '' ?></td>
+                            </tr>
+                            <tr>
+                                <th>Wilayah Bongkar</th>
+                                <td><?= esc($order['wilayah_bongkar'] ?? '') ?></td>
+                            </tr>
+                            <tr>
+                                <th>Partner Bongkar</th>
+                                <td><?= esc($order['kode_partner_bongkar'] ?? '') ?><?= !empty($order['partner_bongkar']) ? (' - ' . esc($order['partner_bongkar'])) : '' ?></td>
                             </tr>
                             <tr>
                                 <th>Keterangan</th>
