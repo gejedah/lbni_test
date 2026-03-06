@@ -42,8 +42,8 @@
     </div>
 
     <form class="row g-2 mb-3" method="get" action="/sales_order">
-        <input type="hidden" name="tipe" value="<?= esc($tipe ?? 'Door to Door') ?>">
-        <input type="hidden" name="ada_asuransi" value="<?= esc($ada_asuransi ?? 1) ?>">
+        <input type="hidden" name="tipe" value="<?= esc($tipe) ?>">
+        <input type="hidden" name="ada_asuransi" value="<?= esc($ada_asuransi) ?>">
 
         <div class="col-md-8">
             <input type="text" name="search" class="form-control" placeholder="Search by SO, customer, sales, kargo or notes" value="<?= esc($search ?? '') ?>">
