@@ -83,6 +83,7 @@
                     <th>Partner Bongkar</th>
                     <th>Keterangan</th>
                     <th>Harga Jual</th>
+                    <th>Tanggal Otorisasi</th>
                     <th style="width:90px">Aksi</th>
                 </tr>
                 </thead>
