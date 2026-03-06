@@ -10,10 +10,12 @@ class SoModel extends Model
 
     public function getSalesOrder(?string $tipe = null, ?int $ada_asuransi = null)
     {
+        // initialize row number and select from s_o
+        // $builder = $this->db->table('(SELECT @row_number := 0) AS ori, s_o so');
         $builder = $this->db->table('s_o so');
 
         $builder->select([
-            'so.id_s_o',
+            "so.id_s_o",
             'so.no_s_o',
             'so.tipe',
             'so.qty',
@@ -24,10 +26,10 @@ class SoModel extends Model
             'sales.kode_salesman',
             'sales.nama as nama_salesman',
             'kk.nama_kategori_kargo as kategori_kargo',
-            "(CASE WHEN so.ada_asuransi = 1 THEN 'YA' END) as asuransi",
+            "(CASE WHEN so.ada_asuransi = 1 THEN 'YA' END) as `asuransi`",
             'so.tagihan_asuransi',
             'so.keterangan as keterangan_so',
-            'jk.no_reff as jadwal_kapal',
+            "CONCAT_WS(' ', kapal.nama_kapal , ' V. ', jk.no_voyage ) as `jadwal_kapal`",
             'kapal.kode_kapal',
             'jk.rencana_berangkat_etd as tanggal_rencana_berangkat_etd',
             'wm.nama_wilayah as wilayah_muat',
@@ -36,8 +38,8 @@ class SoModel extends Model
             'wb.nama_wilayah as wilayah_bongkar',
             'pb.kode as kode_partner_bongkar',
             'pb.nama as partner_bongkar',
-            'soohj.otorisasi_harga_jual as harga_jual',
-            'soohj.tanggal_otorisasi as tanggal_otorisasi',
+            "(CASE WHEN soohj.otorisasi_harga_jual IS NOT NULL THEN soohj.otorisasi_harga_jual ELSE so.harga_jual END) as `harga_jual`",
+            'soohj.tanggal_otorisasi as `tanggal_otorisasi`'
         ]);
 
         $builder->join('pelanggan pelanggan', 'pelanggan.id_pelanggan = so.id_pelanggan', 'left');
@@ -51,8 +53,13 @@ class SoModel extends Model
         $builder->join('wilayah wb', 'wb.id_wilayah = jk.id_wilayah_bongkar', 'left');
         $builder->join('s_o_otorisasi_harga_jual soohj', 'soohj.id_s_o = so.id_s_o', 'left');
 
-        $builder->where('so.tipe', $tipe);
-        $builder->where('so.ada_asuransi', $ada_asuransi);
+        // Use strict null checks so 0 values (e.g. ada_asuransi = 0) are preserved
+        // if ($tipe !== null) {
+        //     $builder->where('so.tipe', $tipe);
+        // }
+        // if ($ada_asuransi !== null) {
+        //     $builder->where('so.ada_asuransi', $ada_asuransi);
+        // }
 
         $query = $builder->get();
         return $query->getResultArray();
@@ -61,10 +68,12 @@ class SoModel extends Model
     // New: return the prepared builder so controllers can add search/limit/offset and count
     public function getSalesOrderBuilder(?string $tipe = null, ?int $ada_asuransi = null)
     {
+        // initialize row number and select from s_o so (initialized in FROM)
+        // $builder = $this->db->table('(SELECT @row_number := 0) AS ori, s_o so');
         $builder = $this->db->table('s_o so');
 
         $builder->select([
-            'so.id_s_o',
+            "so.id_s_o",
             'so.no_s_o',
             'so.tipe',
             'so.qty',
@@ -75,10 +84,10 @@ class SoModel extends Model
             'sales.kode_salesman',
             'sales.nama as nama_salesman',
             'kk.nama_kategori_kargo as kategori_kargo',
-            "(CASE WHEN so.ada_asuransi = 1 THEN 'YA' END) as asuransi",
+            "(CASE WHEN so.ada_asuransi = 1 THEN 'YA' END) as `asuransi`",
             'so.tagihan_asuransi',
             'so.keterangan as keterangan_so',
-            'jk.no_reff as jadwal_kapal',
+            "CONCAT_WS(' ', kapal.nama_kapal , ' V. ', jk.no_voyage ) as `jadwal_kapal`",
             'kapal.kode_kapal',
             'jk.rencana_berangkat_etd as tanggal_rencana_berangkat_etd',
             'wm.nama_wilayah as wilayah_muat',
@@ -87,10 +96,10 @@ class SoModel extends Model
             'wb.nama_wilayah as wilayah_bongkar',
             'pb.kode as kode_partner_bongkar',
             'pb.nama as partner_bongkar',
-            'soohj.otorisasi_harga_jual as harga_jual',
-            'soohj.tanggal_otorisasi as tanggal_otorisasi',
+            "(CASE WHEN soohj.otorisasi_harga_jual IS NOT NULL THEN soohj.otorisasi_harga_jual ELSE so.harga_jual END) as `harga_jual`",
+            'soohj.tanggal_otorisasi as `tanggal_otorisasi`'
         ]);
-        // log_message('debug', 'getSalesOrderBuilder: ' . $builder->getCompiledSelect(false)); // Log the compiled SQL for debugging
+        log_message('debug', 'getSalesOrderBuilder: ' . $builder->getCompiledSelect(false)); // Log the compiled SQL for debugging
 
         $builder->join('pelanggan pelanggan', 'pelanggan.id_pelanggan = so.id_pelanggan', 'left');
         $builder->join('salesman sales', 'sales.id_salesman = so.id_salesman', 'left');
@@ -103,12 +112,12 @@ class SoModel extends Model
         $builder->join('wilayah wb', 'wb.id_wilayah = jk.id_wilayah_bongkar', 'left');
         $builder->join('s_o_otorisasi_harga_jual soohj', 'soohj.id_s_o = so.id_s_o', 'left');
 
-        if (!empty($tipe)){
-            $builder->where('so.tipe', $tipe);
-        }
-        if (!empty($ada_asuransi)){
-            $builder->where('so.ada_asuransi', $ada_asuransi);
-        }
+        // if ($tipe !== null) {
+        //     $builder->where('so.tipe', $tipe);
+        // }
+        // if ($ada_asuransi !== null) {
+        //     $builder->where('so.ada_asuransi', $ada_asuransi);
+        // }
 
         return $builder;
     }

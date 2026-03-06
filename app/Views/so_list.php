@@ -75,8 +75,15 @@
                     <th>Kategori Kargo</th>
                     <th>Asuransi</th>
                     <th>Tagihan Asuransi</th>
-                    <th>Harga Jual</th>
+                    <th>Jadwal Kapal</th>
                     <th>Rencana Berangkat (ETD)</th>
+                    <th>Wilayah Muat</th>
+                    <th>Partner Muat</th>
+                    <th>Wilayah Bongkar</th>
+                    <th>Partner Bongkar</th>
+                    <th>Keterangan</th>
+                    <th>Harga Jual</th>
+                    <th>Tanggal Otorisasi</th>
                     <th style="width:90px">Aksi</th>
                 </tr>
                 </thead>
@@ -94,8 +101,15 @@
                         <td><?= esc($o['kategori_kargo'] ?? '') ?></td>
                         <td><?= esc($o['asuransi'] ?? '') ?></td>
                         <td><?= esc($o['tagihan_asuransi'] ?? '') ?></td>
-                        <td><?= esc($o['harga_jual'] ?? '') ?></td>
+                        <td><?= esc($o['jadwal_kapal'] ?? '') ?> <?= !empty($o['kode_kapal']) ? (' - ' . esc($o['kode_kapal'])) : '' ?></td>
                         <td><?= esc($o['tanggal_rencana_berangkat_etd'] ?? '') ?></td>
+                        <td><?= esc($o['wilayah_muat'] ?? '') ?></td>
+                        <td><?= esc($o['kode_partner_muat'] ?? '') ?><?= !empty($o['partner_muat']) ? (' - ' . esc($o['partner_muat'])) : '' ?></td>
+                        <td><?= esc($o['wilayah_bongkar'] ?? '') ?></td>
+                        <td><?= esc($o['kode_partner_bongkar'] ?? '') ?><?= !empty($o['partner_bongkar']) ? (' - ' . esc($o['partner_bongkar'])) : '' ?></td>
+                        <td><?= esc($o['keterangan_so'] ?? '') ?></td>
+                        <td><?= esc($o['harga_jual'] ?? '') ?></td>
+                        <td><?= esc($o['tanggal_otorisasi'] ?? '') ?></td>
                         <td><a href="/sales_order/view/<?= esc($o['id_s_o'] ?? '') ?>" class="btn btn-sm btn-outline-primary">View</a></td>
                     </tr>
                 <?php endforeach; ?>
@@ -115,8 +129,8 @@
             $end = min($last, $current + 2);
             ?>
 
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
+            <nav aria-label="Page navigation" class="d-flex justify-content-center">
+                <ul class="d-flex pagination justify-content-center">
                     <li class="page-item <?= $current <= 1 ? 'disabled' : '' ?>">
                         <?php $qp = http_build_query(['page' => $current - 1, 'search' => $searchParam, 'tipe' => $tipeParam, 'ada_asuransi' => $adaParam]); ?>
                         <a class="page-link" href="<?= $current > 1 ? $baseUrl . '?' . $qp : '#' ?>">&laquo; Prev</a>
