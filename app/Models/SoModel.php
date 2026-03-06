@@ -42,9 +42,9 @@ class SoModel extends Model
 
         $builder->join('pelanggan pelanggan', 'pelanggan.id_pelanggan = so.id_pelanggan', 'left');
         $builder->join('salesman sales', 'sales.id_salesman = so.id_salesman', 'left');
-        $builder->join('kategori_kargo kk', 'kk.id_kategori_kargo = so.id_kategori_kargo', 'inner');
-        $builder->join('jadwal_kapal jk', 'jk.id_jadwal_kapal = so.id_jadwal_kapal', 'inner');
-        $builder->join('kapal kapal', 'kapal.id_kapal = jk.id_kapal', 'inner');
+        $builder->join('kategori_kargo kk', 'kk.id_kategori_kargo = so.id_kategori_kargo', 'left');
+        $builder->join('jadwal_kapal jk', 'jk.id_jadwal_kapal = so.id_jadwal_kapal', 'left');
+        $builder->join('kapal kapal', 'kapal.id_kapal = jk.id_kapal', 'left');
         $builder->join('partner pm', 'so.id_partner_muat = pm.id_partner', 'left');
         $builder->join('partner pb', 'so.id_partner_bongkar = pb.id_partner', 'left');
         $builder->join('wilayah wm', 'jk.id_wilayah_muat = wm.id_wilayah', 'left');
