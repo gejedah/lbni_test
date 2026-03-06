@@ -10,34 +10,35 @@ class SoModel extends Model
 
     public function getSalesOrder(?string $tipe = null, ?int $ada_asuransi = null)
     {
-        $builder = $this->db->table('s_o so');
+        // initialize row number and select from s_o
+        $builder = $this->db->table('(SELECT @row_number := 0) AS ori, s_o so');
 
         $builder->select([
-            'so.id_s_o',
-            'so.no_s_o',
-            'so.tipe',
-            'so.qty',
-            'so.tanggal',
-            'so.jam',
-            'pelanggan.kode_pelanggan',
-            'pelanggan.nama as nama_pelanggan',
-            'sales.kode_salesman',
-            'sales.nama as nama_salesman',
-            'kk.nama_kategori_kargo as kategori_kargo',
-            "(CASE WHEN so.ada_asuransi = 1 THEN 'YA' END) as asuransi",
-            'so.tagihan_asuransi',
-            'so.keterangan as keterangan_so',
-            'jk.no_reff as jadwal_kapal',
-            'kapal.kode_kapal',
-            'jk.rencana_berangkat_etd as tanggal_rencana_berangkat_etd',
-            'wm.nama_wilayah as wilayah_muat',
-            'pm.kode as kode_partner_muat',
-            'pm.nama as partner_muat',
-            'wb.nama_wilayah as wilayah_bongkar',
-            'pb.kode as kode_partner_bongkar',
-            'pb.nama as partner_bongkar',
-            'soohj.otorisasi_harga_jual as harga_jual',
-            'soohj.tanggal_otorisasi as tanggal_otorisasi',
+            "(@row_number := @row_number + 1) AS `No`",
+            "so.no_s_o as `No SO`",
+            "so.tipe as `Tipe SO`",
+            "so.qty as `Qty`",
+            "so.tanggal as `Tanggal`",
+            "so.jam as `Jam`",
+            "pelanggan.kode_pelanggan as `Kode Pelanggan`",
+            "pelanggan.nama as `Nama Pelanggan`",
+            "sales.kode_salesman as `Kode Salesman`",
+            "sales.nama as `Nama Salesman`",
+            "kk.nama_kategori_kargo as `kategori kargo`",
+            "CASE WHEN so.ada_asuransi = 1 THEN 'YA' ELSE '' END as `Asuransi`",
+            "COALESCE(so.tagihan_asuransi, '') as `Tagihan Asuransi`",
+            "so.keterangan as `Keterangan So`",
+            "CONCAT_WS(' ', kapal.nama_kapal , ' V. ', jk.no_voyage ) as `Jadwal Kapal`",
+            "kapal.kode_kapal as `Kode Kapal`",
+            "jk.rencana_berangkat_etd as `Tanggal Rencana Berangkat (ETD)`",
+            "wm.nama_wilayah as `Wilayah Muat`",
+            "COALESCE(pm.kode, '') as `Kode Partner Muat`",
+            "COALESCE(pm.nama, '') as `Partner Muat`",
+            "COALESCE(wb.nama_wilayah, '') as `Wilayah Bongkar`",
+            "COALESCE(pb.kode, '') as `Kode Partner Bongkar`",
+            "COALESCE(pb.nama, '') as `Partner Bongkar`",
+            "CASE WHEN soohj.otorisasi_harga_jual IS NOT NULL THEN soohj.otorisasi_harga_jual ELSE so.harga_jual END as `Harga Jual`",
+            "COALESCE(soohj.tanggal_otorisasi, '') as `Tanggal Otorisasi`",
         ]);
 
         $builder->join('pelanggan pelanggan', 'pelanggan.id_pelanggan = so.id_pelanggan', 'left');
@@ -51,8 +52,13 @@ class SoModel extends Model
         $builder->join('wilayah wb', 'wb.id_wilayah = jk.id_wilayah_bongkar', 'left');
         $builder->join('s_o_otorisasi_harga_jual soohj', 'soohj.id_s_o = so.id_s_o', 'left');
 
-        $builder->where('so.tipe', $tipe);
-        $builder->where('so.ada_asuransi', $ada_asuransi);
+        // Use strict null checks so 0 values (e.g. ada_asuransi = 0) are preserved
+        if ($tipe !== null) {
+            $builder->where('so.tipe', $tipe);
+        }
+        if ($ada_asuransi !== null) {
+            $builder->where('so.ada_asuransi', $ada_asuransi);
+        }
 
         $query = $builder->get();
         return $query->getResultArray();
@@ -61,34 +67,35 @@ class SoModel extends Model
     // New: return the prepared builder so controllers can add search/limit/offset and count
     public function getSalesOrderBuilder(?string $tipe = null, ?int $ada_asuransi = null)
     {
-        $builder = $this->db->table('s_o so');
+        // initialize row number and select from s_o so (initialized in FROM)
+        $builder = $this->db->table('(SELECT @row_number := 0) AS ori, s_o so');
 
         $builder->select([
-            'so.id_s_o',
-            'so.no_s_o',
-            'so.tipe',
-            'so.qty',
-            'so.tanggal',
-            'so.jam',
-            'pelanggan.kode_pelanggan',
-            'pelanggan.nama as nama_pelanggan',
-            'sales.kode_salesman',
-            'sales.nama as nama_salesman',
-            'kk.nama_kategori_kargo as kategori_kargo',
-            "(CASE WHEN so.ada_asuransi = 1 THEN 'YA' END) as asuransi",
-            'so.tagihan_asuransi',
-            'so.keterangan as keterangan_so',
-            'jk.no_reff as jadwal_kapal',
-            'kapal.kode_kapal',
-            'jk.rencana_berangkat_etd as tanggal_rencana_berangkat_etd',
-            'wm.nama_wilayah as wilayah_muat',
-            'pm.kode as kode_partner_muat',
-            'pm.nama as partner_muat',
-            'wb.nama_wilayah as wilayah_bongkar',
-            'pb.kode as kode_partner_bongkar',
-            'pb.nama as partner_bongkar',
-            'soohj.otorisasi_harga_jual as harga_jual',
-            'soohj.tanggal_otorisasi as tanggal_otorisasi',
+            "(@row_number := @row_number + 1) AS `No`",
+            "so.no_s_o as `No SO`",
+            "so.tipe as `Tipe SO`",
+            "so.qty as `Qty`",
+            "so.tanggal as `Tanggal`",
+            "so.jam as `Jam`",
+            "pelanggan.kode_pelanggan as `Kode Pelanggan`",
+            "pelanggan.nama as `Nama Pelanggan`",
+            "sales.kode_salesman as `Kode Salesman`",
+            "sales.nama as `Nama Salesman`",
+            "kk.nama_kategori_kargo as `kategori kargo`",
+            "CASE WHEN so.ada_asuransi = 1 THEN 'YA' ELSE '' END as `Asuransi`",
+            "COALESCE(so.tagihan_asuransi, '') as `Tagihan Asuransi`",
+            "so.keterangan as `Keterangan So`",
+            "CONCAT_WS(' ', kapal.nama_kapal , ' V. ', jk.no_voyage ) as `Jadwal Kapal`",
+            "kapal.kode_kapal as `Kode Kapal`",
+            "jk.rencana_berangkat_etd as `Tanggal Rencana Berangkat (ETD)`",
+            "wm.nama_wilayah as `Wilayah Muat`",
+            "COALESCE(pm.kode, '') as `Kode Partner Muat`",
+            "COALESCE(pm.nama, '') as `Partner Muat`",
+            "COALESCE(wb.nama_wilayah, '') as `Wilayah Bongkar`",
+            "COALESCE(pb.kode, '') as `Kode Partner Bongkar`",
+            "COALESCE(pb.nama, '') as `Partner Bongkar`",
+            "CASE WHEN soohj.otorisasi_harga_jual IS NOT NULL THEN soohj.otorisasi_harga_jual ELSE so.harga_jual END as `Harga Jual`",
+            "COALESCE(soohj.tanggal_otorisasi, '') as `Tanggal Otorisasi`",
         ]);
         // log_message('debug', 'getSalesOrderBuilder: ' . $builder->getCompiledSelect(false)); // Log the compiled SQL for debugging
 
@@ -103,10 +110,10 @@ class SoModel extends Model
         $builder->join('wilayah wb', 'wb.id_wilayah = jk.id_wilayah_bongkar', 'left');
         $builder->join('s_o_otorisasi_harga_jual soohj', 'soohj.id_s_o = so.id_s_o', 'left');
 
-        if (!empty($tipe)){
+        if ($tipe !== null) {
             $builder->where('so.tipe', $tipe);
         }
-        if (!empty($ada_asuransi)){
+        if ($ada_asuransi !== null) {
             $builder->where('so.ada_asuransi', $ada_asuransi);
         }
 
