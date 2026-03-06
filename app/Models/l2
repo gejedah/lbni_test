@@ -62,7 +62,10 @@ left join wilayah wm
 left join wilayah wb
 	on
 	wb.id_wilayah = jk.id_wilayah_bongkar
-INNER  join s_o_otorisasi_harga_jual soohj 
+INNER join s_o_otorisasi_harga_jual soohj 
 	on
 	soohj.id_s_o = so.id_s_o
+where
+	so.tipe = 'Door to Door'
+	and so.ada_asuransi = 1
 ;
