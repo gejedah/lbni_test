@@ -108,6 +108,7 @@
                         <td><?= esc($o['kode_partner_bongkar'] ?? '') ?><?= !empty($o['partner_bongkar']) ? (' - ' . esc($o['partner_bongkar'])) : '' ?></td>
                         <td><?= esc($o['keterangan_so'] ?? '') ?></td>
                         <td><?= esc($o['harga_jual'] ?? '') ?></td>
+                        <td><?= esc($o['tanggal_otorisasi'] ?? '') ?></td>
                         <td><a href="/sales_order/view/<?= esc($o['id_s_o'] ?? '') ?>" class="btn btn-sm btn-outline-primary">View</a></td>
                     </tr>
                 <?php endforeach; ?>
